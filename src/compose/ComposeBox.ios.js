@@ -410,6 +410,7 @@ class ComposeBox extends PureComponent<Props, State> {
               onImageSelect={this.handleImageSelect}
               disableCamera={draftImages && Object.keys(draftImages).length >= 4}
               disableUpload={draftImages && Object.keys(draftImages).length >= 4}
+              maxFiles={4 - Object.keys(draftImages).length}
             />
           </View>
           <View style={styles.composeText}>

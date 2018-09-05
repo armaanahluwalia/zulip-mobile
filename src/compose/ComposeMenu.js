@@ -20,6 +20,7 @@ type Props = {
   onImageSelect: Object => void,
   disableUpload?: boolean,
   disableCamera?: boolean,
+  maxFiles?: number,
 };
 
 /*
@@ -68,7 +69,7 @@ class ComposeMenu extends PureComponent<Props> {
   };
 
   handleImageRequest = async (requestType: 'openPicker' | 'openCamera') => {
-    const { dispatch, narrow, onImageSelect } = this.props;
+    const { dispatch, narrow, onImageSelect, maxFiles } = this.props;
     const defaults = {
       mediaType: 'photo',
       compressImageMaxWidth: 2000,
@@ -85,7 +86,7 @@ class ComposeMenu extends PureComponent<Props> {
         requestObj = {
           ...defaults,
           multiple: true,
-          maxFiles: 4,
+          maxFiles,
         };
       }
       let images = await ImagePicker[requestType](requestObj);
