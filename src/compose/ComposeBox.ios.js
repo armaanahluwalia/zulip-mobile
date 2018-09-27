@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from 'react';
-import { View, TextInput, findNodeHandle, Image, FlatList } from 'react-native';
+import { View, TextInput, findNodeHandle, Image, FlatList, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import TextInputReset from 'react-native-text-input-reset';
 
@@ -22,13 +22,16 @@ import {
   draftUpdate,
   draftImageAdd,
   draftImageRemove,
+  draftImageUploading,
+  draftImageUploaded,
+  draftImageError,
   fetchTopicsForActiveStream,
   sendTypingEvent,
 } from '../actions';
 import { updateMessage, uploadFile } from '../api';
 import { FloatingActionButton, Input, MultilineInput } from '../common';
 import { showErrorAlert } from '../utils/info';
-import { IconDone, IconSend, IconCross } from '../common/Icons';
+import { IconDone, IconSend, IconCross, IconWarning } from '../common/Icons';
 import { isStreamNarrow, isStreamOrTopicNarrow, topicNarrow } from '../utils/narrow';
 import ComposeMenu from './ComposeMenu';
 import AutocompleteViewWrapper from '../autocomplete/AutocompleteViewWrapper';
@@ -94,6 +97,7 @@ class ComposeBox extends PureComponent<Props, State> {
 
   messageInput: ?TextInput = null;
   topicInput: ?TextInput = null;
+  latestUploadId: number;
 
   static contextTypes = {
     styles: () => null,
@@ -210,24 +214,56 @@ class ComposeBox extends PureComponent<Props, State> {
 
     this.handleMessageChange('');
   };
-  uploadAllDrafts = () => {
+  // Not sure why we need to add a type any to the return type here
+  // but flow complains about serverUri being undefined otherwise.
+  uploadAllDraftImages = (): Promise<any> => {
     const { dispatch, draftImages, auth } = this.props;
     const messageUriArr = [];
     const imageIds = Object.keys(draftImages);
+    const uploadId = Date.now();
+    this.latestUploadId = uploadId;
     imageIds.forEach(id => {
-      const imageObj = draftImages[id];
-      const uriPromise = new Promise(async (resolve, reject) => {
-        try {
-          const remoteUri = await uploadFile(auth, imageObj.uri, imageObj.fileName);
-          resolve(`[${imageObj.fileName}](${remoteUri})`);
-          dispatch(draftImageRemove(id));
-        } catch (e) {
-          reject(e);
-        }
-      });
+      const { uri, fileName, uploaded, serverUri } = draftImages[id];
+      let uriPromise;
+      // If already uploaded
+      if (uploaded) {
+        uriPromise = Promise.resolve({
+          fileName,
+          serverUri,
+        });
+      } else {
+        // Otherwise upload to server
+        dispatch(draftImageUploading(id));
+        uriPromise = new Promise(async (resolve, reject) => {
+          try {
+            const remoteUri = await uploadFile(auth, uri, fileName);
+            if (uploadId !== this.latestUploadId) {
+              return;
+            }
+            dispatch(draftImageUploaded(id, remoteUri));
+            resolve({
+              fileName,
+              serverUri: remoteUri,
+            });
+          } catch (e) {
+            if (uploadId !== this.latestUploadId) {
+              return;
+            }
+            dispatch(draftImageError(id));
+            reject(new Error(`"Error uploading image ${fileName}`));
+          }
+        });
+      }
       messageUriArr.push(uriPromise);
     });
     return Promise.all(messageUriArr);
+  };
+  removeAllDraftImages = () => {
+    const { dispatch, draftImages } = this.props;
+    const imageIds = Object.keys(draftImages);
+    imageIds.forEach(id => {
+      dispatch(draftImageRemove(id));
+    });
   };
   handleSend = () => {
     const { dispatch, narrow } = this.props;
@@ -238,13 +274,21 @@ class ComposeBox extends PureComponent<Props, State> {
       ? topicNarrow(narrow[0].operand, topic || '(no topic)')
       : narrow;
 
-    this.uploadAllDrafts().then(messageUriArr => {
-      message += `\n ${messageUriArr.join('\n')}`;
-      if (message && message.length) {
-        dispatch(addToOutbox(destinationNarrow, message));
-      }
-      this.clearMessageInput();
-    });
+    this.uploadAllDraftImages()
+      .then(imagesUploaded => {
+        const messageLinks = imagesUploaded.map(
+          ({ fileName, serverUri }) => `[${fileName}](${serverUri})`,
+        );
+        message += `\n ${messageLinks.join('\n')}`;
+        if (message && message.length) {
+          dispatch(addToOutbox(destinationNarrow, message));
+        }
+        this.clearMessageInput();
+        this.removeAllDraftImages();
+      })
+      .catch(e => {
+        showErrorAlert(`${e} \n Please try again.`, 'Error Uploading Image');
+      });
   };
 
   handleEdit = () => {
@@ -322,13 +366,31 @@ class ComposeBox extends PureComponent<Props, State> {
             resizeMode="cover"
             source={{ isStatic: true, uri: draftImages[key].uri }}
           />
+          {draftImages[key].uploading && (
+            <View style={styles.composeImageUploading}>
+              <ActivityIndicator
+                size="small"
+                color="#ffffff"
+                style={styles.composeImageUploadIcon}
+              />
+            </View>
+          )}
+          {draftImages[key].uploaded && (
+            <View style={styles.composeImageUploading}>
+              <IconDone size={40} style={styles.composeImageUploadIcon} />
+            </View>
+          )}
+          {draftImages[key].error && (
+            <View style={styles.composeImageUploading}>
+              <IconWarning size={40} style={styles.composeImageUploadIcon} />
+            </View>
+          )}
         </View>
       );
     };
     const imagePreviewData = Object.keys(draftImages).map(id => ({ key: id }));
     return (
-      // eslint-disable-next-line react-native/no-inline-styles
-      <View style={{ flexShrink: 1, marginBottom: safeAreaInsets.bottom }}>
+      <View style={[styles.composeWrapper, { marginBottom: safeAreaInsets.bottom }]}>
         <AutocompleteViewWrapper
           composeText={message}
           isTopicFocused={isTopicFocused}

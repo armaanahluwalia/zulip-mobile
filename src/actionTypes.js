@@ -531,7 +531,6 @@ export type DraftUpdateAction = {
 
 export type DraftsAction = DraftUpdateAction | LogoutAction;
 
-
 /**
  * **Draft Image Actions**
  * Used by ComposeBox to show previews of images selected for

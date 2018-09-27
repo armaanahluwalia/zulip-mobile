@@ -5,11 +5,14 @@ import type { Style } from '../types';
 import { BRAND_COLOR } from './';
 
 export type ComposeBoxStyles = {
+  composeWrapper: Style,
   composeBox: Style,
   composeImage: Style,
   composeImages: Style,
   composeImageDeleteButton: Style,
   composeImageContainer: Style,
+  composeImageUploading: Style,
+  composeImageUploadIcon: Style,
   composeText: Style,
   composeTextInput: Style,
   topicInput: Style,
@@ -41,6 +44,9 @@ const inputMarginPadding = {
 };
 
 export default ({ color, backgroundColor, borderColor }: Props) => ({
+  composeWrapper: {
+    flexShrink: 1,
+  },
   composeBox: {
     flexDirection: 'row',
     backgroundColor: 'rgba(127, 127, 127, 0.1)',
@@ -55,6 +61,22 @@ export default ({ color, backgroundColor, borderColor }: Props) => ({
   },
   composeImage: {
     flex: 1,
+  },
+  composeImageUploading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  composeImageUploadIcon: {
+    textShadowColor: 'rgba(0, 0, 0, 0.50)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 10,
+    fontSize: 24,
+    color: 'white',
   },
   composeImageDeleteButton: {
     position: 'absolute',

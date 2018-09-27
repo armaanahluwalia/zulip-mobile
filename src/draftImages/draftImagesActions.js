@@ -14,11 +14,7 @@ import {
   DRAFT_IMAGE_ERROR,
 } from '../actionConstants';
 
-export const draftImageAdd = (
-  id: string,
-  fileName: string,
-  uri: string,
-): DraftImageAddAction => ({
+export const draftImageAdd = (id: string, fileName: string, uri: string): DraftImageAddAction => ({
   type: DRAFT_IMAGE_ADD,
   id,
   fileName,
