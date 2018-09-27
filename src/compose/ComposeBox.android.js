@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from 'react';
-import { View, TextInput, findNodeHandle } from 'react-native';
+import { View, TextInput, findNodeHandle, Image, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import TextInputReset from 'react-native-text-input-reset';
 
@@ -14,18 +14,21 @@ import type {
   Dispatch,
   Dimensions,
   GlobalState,
+  DraftImagesState,
 } from '../types';
 import {
   addToOutbox,
   cancelEditMessage,
   draftUpdate,
+  draftImageAdd,
+  draftImageRemove,
   fetchTopicsForActiveStream,
   sendTypingEvent,
 } from '../actions';
-import { updateMessage } from '../api';
+import { updateMessage, uploadFile } from '../api';
 import { FloatingActionButton, Input, MultilineInput } from '../common';
 import { showErrorAlert } from '../utils/info';
-import { IconDone, IconSend } from '../common/Icons';
+import { IconDone, IconSend, IconCross } from '../common/Icons';
 import { isStreamNarrow, isStreamOrTopicNarrow, topicNarrow } from '../utils/narrow';
 import ComposeMenu from './ComposeMenu';
 import AutocompleteViewWrapper from '../autocomplete/AutocompleteViewWrapper';
@@ -47,6 +50,7 @@ import {
   getIsActiveStreamAnnouncementOnly,
 } from '../subscriptions/subscriptionSelectors';
 import { getDraftForActiveNarrow } from '../drafts/draftsSelectors';
+import { getDraftImageData } from '../draftImages/draftImagesSelectors';
 
 type Props = {
   auth: Auth,
@@ -54,6 +58,7 @@ type Props = {
   narrow: Narrow,
   users: User[],
   draft: string,
+  draftImages: DraftImagesState,
   lastMessageTopic: string,
   isAdmin: boolean,
   isAnnouncementOnly: boolean,
@@ -114,14 +119,15 @@ class ComposeBox extends PureComponent<Props, State> {
 
   getCanSelectTopic = () => {
     const { isMessageFocused, isTopicFocused } = this.state;
-    const { editMessage, narrow } = this.props;
+    const { editMessage, narrow, draftImages } = this.props;
     if (editMessage) {
       return isStreamOrTopicNarrow(narrow);
     }
     if (!isStreamNarrow(narrow)) {
       return false;
     }
-    return isMessageFocused || isTopicFocused;
+    const hasImages = Boolean(Object.keys(draftImages).length);
+    return isMessageFocused || isTopicFocused || hasImages;
   };
 
   setMessageInputValue = (message: string) => {
@@ -140,6 +146,23 @@ class ComposeBox extends PureComponent<Props, State> {
     }));
   };
 
+  handleImageSelect = (imageEventObj: Object) => {
+    const { dispatch, response } = imageEventObj;
+    if (!response.images || !response.images.length) {
+      return;
+    }
+    const { topic } = this.state;
+    const { lastMessageTopic } = this.props;
+    const newTopic = topic || lastMessageTopic;
+    this.setState({ topic: newTopic });
+    response.images.forEach(image => {
+      dispatch(draftImageAdd(image.uri, image.fileName, image.uri));
+    });
+  };
+  handleRemoveDraftImage = (id: string) => {
+    const { dispatch } = this.props;
+    dispatch(draftImageRemove(id));
+  };
   handleLayoutChange = (event: Object) => {
     this.setState({
       height: event.nativeEvent.layout.height,
@@ -213,17 +236,42 @@ class ComposeBox extends PureComponent<Props, State> {
     this.setState({ isMenuExpanded: false });
   };
 
+  uploadAllDrafts = () => {
+    const { dispatch, draftImages, auth } = this.props;
+    const messageUriArr = [];
+    const imageIds = Object.keys(draftImages);
+    imageIds.forEach(id => {
+      const imageObj = draftImages[id];
+      const uriPromise = new Promise(async (resolve, reject) => {
+        try {
+          const remoteUri = await uploadFile(auth, imageObj.uri, imageObj.fileName);
+          resolve(`[${imageObj.fileName}](${remoteUri})`);
+          dispatch(draftImageRemove(id));
+        } catch (e) {
+          reject(e);
+        }
+      });
+      messageUriArr.push(uriPromise);
+    });
+    return Promise.all(messageUriArr);
+  };
+
   handleSend = () => {
     const { dispatch, narrow } = this.props;
-    const { topic, message } = this.state;
+    const { topic } = this.state;
+    let { message } = this.state;
 
     const destinationNarrow = isStreamNarrow(narrow)
       ? topicNarrow(narrow[0].operand, topic || '(no topic)')
       : narrow;
 
-    dispatch(addToOutbox(destinationNarrow, message));
-
-    this.setMessageInputValue('');
+    this.uploadAllDrafts().then(messageUriArr => {
+      message += `\n ${messageUriArr.join('\n')}`;
+      if (message && message.length) {
+        dispatch(addToOutbox(destinationNarrow, message));
+      }
+      this.setMessageInputValue('');
+    });
   };
 
   handleEdit = () => {
@@ -275,7 +323,10 @@ class ComposeBox extends PureComponent<Props, State> {
       isAdmin,
       isAnnouncementOnly,
       isSubscribed,
+      draftImages,
     } = this.props;
+
+    const { handleRemoveDraftImage } = this;
 
     if (!canSend) {
       return null;
@@ -288,9 +339,30 @@ class ComposeBox extends PureComponent<Props, State> {
     }
 
     const placeholder = getComposeInputPlaceholder(narrow, auth.email, users);
-
+    const sendButtonDisabled = message.trim().length === 0 && Object.keys(draftImages).length <= 0;
+    const renderImagePreview = ({ item }) => {
+      const { key } = item;
+      return (
+        <View style={styles.composeImageContainer} key={key}>
+          <FloatingActionButton
+            style={styles.composeImageDeleteButton}
+            Icon={IconCross}
+            size={25}
+            disabled={false}
+            imageId={key}
+            onPress={() => handleRemoveDraftImage(key)}
+          />
+          <Image
+            style={styles.composeImage}
+            resizeMode="cover"
+            source={{ isStatic: true, uri: draftImages[key].uri }}
+          />
+        </View>
+      );
+    };
+    const imagePreviewData = Object.keys(draftImages).map(id => ({ key: id }));
     return (
-      <View style={{ marginBottom: safeAreaInsets.bottom }}>
+      <View style={{ ...styles.composeWrapper, marginBottom: safeAreaInsets.bottom }}>
         <AutocompleteViewWrapper
           composeText={message}
           isTopicFocused={isTopicFocused}
@@ -307,6 +379,9 @@ class ComposeBox extends PureComponent<Props, State> {
               narrow={narrow}
               expanded={isMenuExpanded}
               onExpandContract={this.handleComposeMenuToggle}
+              onImageSelect={this.handleImageSelect}
+              disableCamera={draftImages && Object.keys(draftImages).length >= 4}
+              disableUpload={draftImages && Object.keys(draftImages).length >= 4}
             />
           </View>
           <View style={styles.composeText}>
@@ -325,6 +400,12 @@ class ComposeBox extends PureComponent<Props, State> {
                 onTouchStart={this.handleInputTouchStart}
               />
             )}
+            <FlatList
+              data={imagePreviewData}
+              contentContainerStyle={styles.composeImages}
+              numColumns={2}
+              renderItem={renderImagePreview}
+            />
             <MultilineInput
               style={styles.composeTextInput}
               placeholder={placeholder}
@@ -346,7 +427,7 @@ class ComposeBox extends PureComponent<Props, State> {
               style={styles.composeSendButton}
               Icon={editMessage === null ? IconSend : IconDone}
               size={32}
-              disabled={message.trim().length === 0}
+              disabled={sendButtonDisabled}
               onPress={editMessage === null ? this.handleSend : this.handleEdit}
             />
           </View>
@@ -366,5 +447,6 @@ export default connect((state: GlobalState, props) => ({
   canSend: canSendToActiveNarrow(props.narrow) && !getShowMessagePlaceholders(props.narrow)(state),
   editMessage: getSession(state).editMessage,
   draft: getDraftForActiveNarrow(props.narrow)(state),
+  draftImages: getDraftImageData(state),
   lastMessageTopic: getLastMessageTopic(props.narrow)(state),
 }))(ComposeBox);

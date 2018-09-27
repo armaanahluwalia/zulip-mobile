@@ -9,7 +9,7 @@ import type { Context, Dispatch, Narrow } from '../types';
 import { showErrorAlert } from '../utils/info';
 import { IconPlus, IconLeft, IconPeople, IconImage, IconCamera } from '../common/Icons';
 import AnimatedComponent from '../animation/AnimatedComponent';
-import { navigateToCreateGroup, uploadImage } from '../actions';
+import { navigateToCreateGroup } from '../actions';
 import { getNarrowToSendTo } from '../selectors';
 
 type Props = {
@@ -17,6 +17,9 @@ type Props = {
   expanded: boolean,
   narrow: Narrow,
   onExpandContract: () => void,
+  onImageSelect: Object => void,
+  disableUpload?: boolean,
+  disableCamera?: boolean,
 };
 
 /*
@@ -65,18 +68,42 @@ class ComposeMenu extends PureComponent<Props> {
   };
 
   handleImageRequest = async (requestType: 'openPicker' | 'openCamera') => {
+    const { dispatch, narrow, onImageSelect } = this.props;
+    const defaults = {
+      mediaType: 'photo',
+      compressImageMaxWidth: 2000,
+      compressImageMaxHeight: 2000,
+      forceJpg: true,
+      compressImageQuality: 0.7,
+    };
     try {
-      const image = await ImagePicker[requestType]({
-        mediaType: 'photo',
-        compressImageMaxWidth: 2000,
-        compressImageMaxHeight: 2000,
-        forceJpg: true,
-        compressImageQuality: 0.7,
+      let requestObj = {
+        ...defaults,
+      };
+
+      if (requestType === 'openPicker') {
+        requestObj = {
+          ...defaults,
+          multiple: true,
+          maxFiles: 4,
+        };
+      }
+      let images = await ImagePicker[requestType](requestObj);
+      images = requestType === 'openPicker' ? images : [images];
+      const response = {
+        images: images.map(image => {
+          const inferredFileName = chooseUploadImageFilename(image.path, image.filename);
+          return {
+            uri: image.path,
+            fileName: inferredFileName,
+          };
+        }),
+      };
+      onImageSelect({
+        narrow,
+        response,
+        dispatch,
       });
-      const { dispatch, narrow } = this.props;
-      dispatch(
-        uploadImage(narrow, image.path, chooseUploadImageFilename(image.path, image.filename)),
-      );
     } catch (e) {
       if (e.code === 'E_PICKER_CANCELLED') {
         return;
@@ -94,26 +121,42 @@ class ComposeMenu extends PureComponent<Props> {
 
   render() {
     const { styles } = this.context;
-    const { dispatch, expanded, onExpandContract } = this.props;
+    const { dispatch, expanded, onExpandContract, disableUpload, disableCamera } = this.props;
+    let animatedWidth = 40;
+    if (!disableCamera) {
+      animatedWidth += 40;
+    }
+    if (!disableUpload) {
+      animatedWidth += 40;
+    }
     return (
       <View style={styles.composeMenu}>
-        <AnimatedComponent property="width" useNativeDriver={false} visible={expanded} width={120}>
+        <AnimatedComponent
+          property="width"
+          useNativeDriver={false}
+          visible={expanded}
+          width={animatedWidth}
+        >
           <View style={styles.composeMenu}>
             <IconPeople
               style={styles.composeMenuButton}
               size={24}
               onPress={() => dispatch(navigateToCreateGroup())}
             />
-            <IconImage
-              style={styles.composeMenuButton}
-              size={24}
-              onPress={this.handleImageUpload}
-            />
-            <IconCamera
-              style={styles.composeMenuButton}
-              size={24}
-              onPress={this.handleCameraCapture}
-            />
+            {!disableUpload && (
+              <IconImage
+                style={styles.composeMenuButton}
+                size={24}
+                onPress={this.handleImageUpload}
+              />
+            )}
+            {!disableCamera && (
+              <IconCamera
+                style={styles.composeMenuButton}
+                size={24}
+                onPress={this.handleCameraCapture}
+              />
+            )}
           </View>
         </AnimatedComponent>
         {!expanded && <IconPlus style={styles.expandButton} size={24} onPress={onExpandContract} />}
