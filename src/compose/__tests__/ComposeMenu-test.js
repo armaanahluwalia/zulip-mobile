@@ -1,4 +1,4 @@
-import { chooseUploadImageFilename } from '../ComposeMenu';
+import { chooseUploadImageFilename, getDefaultFilenameFromUri } from '../ComposeMenu';
 
 describe('chooseUploadImageFilename', () => {
   test('Does nothing if the image uri does not end with an extension for the JPEG format', () => {
@@ -15,4 +15,11 @@ describe('chooseUploadImageFilename', () => {
       ).toBe(`${fileNameWithoutExtension}.jpeg`);
     },
   );
+});
+
+describe('getDefaultFilenameFromUri', () => {
+  test('Returns extracted file name if fileName is left empty', () => {
+    expect(getDefaultFilenameFromUri('path/to/fileName.jpg', '')).toBe('fileName.jpg');
+    expect(getDefaultFilenameFromUri('path/to/fileName.jpg', null)).toBe('fileName.jpg');
+  });
 });
