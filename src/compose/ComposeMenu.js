@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 // $FlowFixMe
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { connect } from 'react-redux';
 
 import type { Context, Dispatch, Narrow } from '../types';
@@ -34,8 +34,8 @@ export const getDefaultFilenameFromUri = (uri: string, fileName?: string) =>
  *
  * The Zulip server will infer the file format from the filename's
  * extension, so in this case we need to adjust the extension to match the
- * actual format.  The clue we get in the image-picker response is the extension
- * found in `uri`.
+ * actual format.  The clue we get in the image picker response is the
+ * extension found in `uri`.
  */
 export const chooseUploadImageFilename = (uri: string, fileName?: string): string => {
   if (typeof fileName !== 'string' || fileName === '') {
@@ -46,7 +46,9 @@ export const chooseUploadImageFilename = (uri: string, fileName?: string): strin
   * HEIF format and have filenames with the extension `.HEIC`.  When the user
   * selects one of these photos through the image picker, the file gets
   * automatically converted to JPEG format... but the `fileName` property in
-  * the react-native-image-picker response still has the `.HEIC` extension.
+  * the react-native-image-crop-picker response **MAY** still have the `.HEIC`
+  * extension. This is untested across physical ios devices but needs to
+  * be confirmed.
   */
   if (/\.jpe?g$/i.test(uri)) {
     return fileName.replace(/\.heic$/i, '.jpeg');
@@ -62,45 +64,32 @@ class ComposeMenu extends PureComponent<Props> {
     styles: () => null,
   };
 
-  handleImagePickerResponse = (response: Object) => {
-    if (response.didCancel) {
-      return;
+  handleImageRequest = async (requestType: 'openPicker' | 'openCamera') => {
+    try {
+      const image = await ImagePicker[requestType]({
+        mediaType: 'photo',
+        compressImageMaxWidth: 2000,
+        compressImageMaxHeight: 2000,
+        forceJpg: true,
+        compressImageQuality: 0.7,
+      });
+      const { dispatch, narrow } = this.props;
+      dispatch(
+        uploadImage(narrow, image.path, chooseUploadImageFilename(image.path, image.filename)),
+      );
+    } catch (e) {
+      if (e.code === 'E_PICKER_CANCELLED') {
+        return;
+      }
+      showErrorAlert(e.toString(), 'Error');
     }
-
-    if (response.error) {
-      showErrorAlert(response.error, 'Error');
-      return;
-    }
-
-    const { dispatch, narrow } = this.props;
-    dispatch(
-      uploadImage(narrow, response.uri, chooseUploadImageFilename(response.uri, response.fileName)),
-    );
   };
-
   handleImageUpload = () => {
-    ImagePicker.launchImageLibrary(
-      {
-        quality: 1.0,
-        noData: true,
-        storageOptions: {
-          skipBackup: true,
-          path: 'images',
-        },
-      },
-      this.handleImagePickerResponse,
-    );
+    this.handleImageRequest('openPicker');
   };
 
   handleCameraCapture = () => {
-    const options = {
-      storageOptions: {
-        cameraRoll: true,
-        waitUntilSaved: true,
-      },
-    };
-
-    ImagePicker.launchCamera(options, this.handleImagePickerResponse);
+    this.handleImageRequest('openCamera');
   };
 
   render() {
