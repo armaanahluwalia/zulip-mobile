@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.nikolaiwarner.RNTextInputReset.RNTextInputResetPackage;
 import com.wix.reactnativenotifications.RNNotificationsPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -52,8 +52,8 @@ public class MainApplication extends Application implements ReactApplication, IN
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new PickerPackage(),
                     new RNTextInputResetPackage(),
-                    new ImagePickerPackage(),
                     new OrientationPackage(),
                     new RNSentryPackage(MainApplication.this),
                     new PhotoViewPackage(),
