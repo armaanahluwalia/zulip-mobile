@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   item: {
     padding: 16,
     borderBottomWidth: 1,
-    borderColor: 'rgba(127, 127, 127, 0.25)',
+    borderColor: 'rgba(86, 86, 86, 0.25)',
   },
   label: {
     fontWeight: 'bold',

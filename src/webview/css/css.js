@@ -42,8 +42,8 @@ pre {
 }
 code, pre {
   border-radius: 3px;
-  border: 1px solid rgba(127, 127, 127, 0.25);
-  background-color: rgba(127, 127, 127, 0.125);
+  border: 1px solid rgba(86, 86, 86, 0.25);
+  background-color: rgba(86, 86, 86, 0.125);
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 table {
@@ -51,10 +51,10 @@ table {
   width: 100%;
 }
 table, th, td {
-  border: 1px solid rgba(127, 127, 127, 0.25);
+  border: 1px solid rgba(86, 86, 86, 0.25);
 }
 thead {
-  background: rgba(127, 127, 127, 0.1);
+  background: rgba(86, 86, 86, 0.1);
 }
 th, td {
   align: center;
@@ -63,7 +63,7 @@ th, td {
 hr {
   margin: 1em 0;
   border: 0;
-  border-top: 1px solid rgba(127, 127, 127, 0.5);
+  border-top: 1px solid rgba(86, 86, 86, 0.5);
 }
 .highlight {
   background-color: hsl(51, 94%, 74%);
@@ -191,7 +191,7 @@ hr {
   height: 2em;
   margin-right: 1em;
   border-radius: 4px;
-  background: rgba(127, 127, 127, 0.9);
+  background: rgba(86, 86, 86, 0.9);
 }
 .loading-content {
   width: 100%;
@@ -203,11 +203,11 @@ hr {
 .loading-content .block {
   background: linear-gradient(
     to right,
-    rgba(127, 127, 127, 0.5) 0%,
-    rgba(127, 127, 127, 0.5) 40%,
-    rgba(127, 127, 127, 0.25) 51%,
-    rgba(127, 127, 127, 0.5) 60%,
-    rgba(127, 127, 127, 0.5) 100%
+    rgba(86, 86, 86, 0.5) 0%,
+    rgba(86, 86, 86, 0.5) 40%,
+    rgba(86, 86, 86, 0.25) 51%,
+    rgba(86, 86, 86, 0.5) 60%,
+    rgba(86, 86, 86, 0.5) 100%
   );
   background-size: 200% 200%;
 	animation: gradient-scroll 1s linear infinite;
@@ -222,7 +222,7 @@ hr {
 }
 .loading-subheader .name {
   width: 10em;
-  background-color: rgba(127, 127, 127, 0.9);
+  background-color: rgba(86, 86, 86, 0.9);
 }
 .loading-subheader .timestamp {
   width: 5em;
@@ -260,7 +260,7 @@ hr {
 blockquote {
   padding-left: 0.5em;
   margin: 0.5em 0 0.5em 0;
-  border-left: 3px solid rgba(127, 127, 127, 0.5);
+  border-left: 3px solid rgba(86, 86, 86, 0.5);
 }
 .message ul {
   padding-left: 1.2em;
@@ -307,18 +307,18 @@ blockquote {
   padding: 0.25em 0.5em;
   margin-left: 4;
   border-radius: 2px;
-  color: rgba(127, 127, 127, 0.75);
+  color: rgba(86, 86, 86, 0.75);
   background: rgba(0, 0, 0, 0.1);
 }
 .reaction-list {
   margin: 0.5em 0;
 }
 .reaction {
-  color: rgba(127, 127, 127, 1);
+  color: rgba(86, 86, 86, 1);
   display: inline-block;
   padding: 5px 6.5px;
   border-radius: 4px;
-  border: 1px solid rgba(127, 127, 127, 0.75);
+  border: 1px solid rgba(86, 86, 86, 0.75);
   line-height: 1em;
   margin: .25em 0.5em .25em 0;
 }

@@ -8,7 +8,7 @@ import Label from './Label';
 const styles = StyleSheet.create({
   header: {
     padding: 10,
-    backgroundColor: 'rgba(127, 127, 127, 0.75)',
+    backgroundColor: 'rgba(86, 86, 86, 0.75)',
   },
 });
 

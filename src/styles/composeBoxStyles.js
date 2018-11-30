@@ -39,7 +39,7 @@ const inputMarginPadding = {
 export default ({ color, backgroundColor, borderColor }: Props) => ({
   composeBox: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(127, 127, 127, 0.1)',
+    backgroundColor: 'rgba(86, 86, 86, 0.1)',
   },
   composeText: {
     flex: 1,

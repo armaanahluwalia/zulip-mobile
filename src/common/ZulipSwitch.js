@@ -1,7 +1,7 @@
 /* @flow */
 import React, { PureComponent } from 'react';
 import { Switch } from 'react-native';
-import { BRAND_COLOR } from '../styles';
+import { BRAND_COLOR, HIGHLIGHT_COLOR } from '../styles';
 
 type Props = {
   value: boolean,
@@ -57,9 +57,10 @@ export default class ZulipSwitch extends PureComponent<Props, State> {
       <Switch
         value={switchValue}
         trackColor={{
-          false: 'rgba(220, 220, 220, 1)',
-          true: BRAND_COLOR,
+          false: 'rgba(200, 200, 200, 1)',
+          true: HIGHLIGHT_COLOR,
         }}
+        thumbColor={BRAND_COLOR}
         onValueChange={this.handleValueChange}
         disabled={disabled}
       />
