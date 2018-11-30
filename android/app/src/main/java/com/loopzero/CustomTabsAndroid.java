@@ -1,4 +1,4 @@
-package com.zulipmobile;
+package com.loopzero;
 
 import android.content.Intent;
 import android.content.pm.ResolveInfo;

@@ -1,4 +1,4 @@
-package com.zulipmobile;
+package com.loopzero;
 
 import android.app.Application;
 import android.app.NotificationManager;
@@ -25,9 +25,9 @@ import com.wix.reactnativenotifications.core.JsIOHelper;
 import com.wix.reactnativenotifications.core.notification.INotificationsApplication;
 import com.wix.reactnativenotifications.core.notification.IPushNotification;
 import com.zmxv.RNSound.RNSoundPackage;
-import com.zulipmobile.notifications.GCMPushNotifications;
-import com.zulipmobile.notifications.MessageInfo;
-import com.zulipmobile.RNSecureRandom;
+import com.loopzero.notifications.GCMPushNotifications;
+import com.loopzero.notifications.MessageInfo;
+import com.loopzero.RNSecureRandom;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -35,9 +35,9 @@ import java.util.List;
 
 import io.sentry.RNSentryPackage;
 
-import static com.zulipmobile.notifications.GCMPushNotifications.ACTION_NOTIFICATIONS_DISMISS;
-import static com.zulipmobile.notifications.NotificationHelper.clearConversations;
-import com.zulipmobile.notifications.NotificationHelper;
+import static com.loopzero.notifications.GCMPushNotifications.ACTION_NOTIFICATIONS_DISMISS;
+import static com.loopzero.notifications.NotificationHelper.clearConversations;
+import com.loopzero.notifications.NotificationHelper;
 
 public class MainApplication extends Application implements ReactApplication, INotificationsApplication {
     private LinkedHashMap<String, List<MessageInfo>> conversations;

@@ -1,4 +1,4 @@
-package com.zulipmobile.notifications;
+package com.loopzero.notifications;
 
 import android.app.Notification;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.TypedValue;
 
-import com.zulipmobile.R;
+import com.loopzero.R;
 
 import java.io.IOException;
 import java.io.InputStream;

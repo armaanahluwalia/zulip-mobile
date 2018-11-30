@@ -99,7 +99,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     defaultConfig {
-        applicationId "com.zulipmobile"
+        applicationId "com.loopzero"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 13

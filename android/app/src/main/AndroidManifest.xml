@@ -1,6 +1,6 @@
 <!--
  This line is here to get `react-native run-android` to work right:
-   package="com.zulipmobile.debug"
+   package="com.loopzero.debug"
  It's not smart enough to find out what the actual application ID of
  the app it just built is, so it relies on a regex search of this file.
  That gives it the wrong answer for our debug builds... unless we
@@ -8,7 +8,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.zulipmobile">
+    package="com.loopzero">
 
     <permission android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -52,8 +52,8 @@
 
       <!-- When `react-native run-android` learns from the decoy `package`
            attribute in our comment above that the application ID is
-           `com.zulipmobile.debug`, it then tries to start an activity
-           `com.zulipmobile.debug.MainActivity`.  So provide that as an alias.
+           `com.loopzero.debug`, it then tries to start an activity
+           `com.loopzero.debug.MainActivity`.  So provide that as an alias.
       -->
       <activity android:name=".debug.MainActivity" android:exported="true"/>
 
@@ -64,7 +64,7 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.zulipmobile" />
+                <category android:name="com.loopzero" />
             </intent-filter>
         </receiver>
         <meta-data android:name="com.wix.reactnativenotifications.gcmSenderId" android:value="@string/gcm_id"/>

@@ -1,4 +1,4 @@
-package com.zulipmobile;
+package com.loopzero;
 
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReactApplicationContext;

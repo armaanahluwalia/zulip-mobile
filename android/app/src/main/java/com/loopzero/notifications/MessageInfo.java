@@ -1,4 +1,4 @@
-package com.zulipmobile.notifications;
+package com.loopzero.notifications;
 
 public class MessageInfo {
     private String content;

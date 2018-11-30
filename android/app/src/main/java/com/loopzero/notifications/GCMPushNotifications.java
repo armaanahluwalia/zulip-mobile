@@ -1,4 +1,4 @@
-package com.zulipmobile.notifications;
+package com.loopzero.notifications;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -20,8 +20,8 @@ import com.wix.reactnativenotifications.core.InitialNotificationHolder;
 import com.wix.reactnativenotifications.core.JsIOHelper;
 import com.wix.reactnativenotifications.core.ProxyService;
 import com.wix.reactnativenotifications.core.notification.PushNotification;
-import com.zulipmobile.BuildConfig;
-import com.zulipmobile.R;
+import com.loopzero.BuildConfig;
+import com.loopzero.R;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,13 +31,13 @@ import java.util.Locale;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
-import static com.zulipmobile.notifications.NotificationHelper.buildNotificationContent;
-import static com.zulipmobile.notifications.NotificationHelper.clearConversations;
-import static com.zulipmobile.notifications.NotificationHelper.extractNames;
-import static com.zulipmobile.notifications.NotificationHelper.extractTotalMessagesCount;
-import static com.zulipmobile.notifications.NotificationHelper.addConversationToMap;
-import static com.zulipmobile.notifications.NotificationHelper.removeMessageFromMap;
-import static com.zulipmobile.notifications.NotificationHelper.TAG;
+import static com.loopzero.notifications.NotificationHelper.buildNotificationContent;
+import static com.loopzero.notifications.NotificationHelper.clearConversations;
+import static com.loopzero.notifications.NotificationHelper.extractNames;
+import static com.loopzero.notifications.NotificationHelper.extractTotalMessagesCount;
+import static com.loopzero.notifications.NotificationHelper.addConversationToMap;
+import static com.loopzero.notifications.NotificationHelper.removeMessageFromMap;
+import static com.loopzero.notifications.NotificationHelper.TAG;
 
 public class GCMPushNotifications extends PushNotification {
 
@@ -208,7 +208,7 @@ public class GCMPushNotifications extends PushNotification {
          * Ideally, actions are sent using dismissIntent.setAction(String),
          * But here {@link com.wix.reactnativenotifications.core.NotificationIntentAdapter#extractPendingNotificationDataFromIntent(Intent)}
          * it checks in the bundle hence, An empty bundle is sent and checked in
-         * {@link com.zulipmobile.MainApplication#getPushNotification} for this string and then dismissed
+         * {@link com.loopzero.MainApplication#getPushNotification} for this string and then dismissed
          *
          **/
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {

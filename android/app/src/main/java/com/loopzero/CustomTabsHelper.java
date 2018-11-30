@@ -1,4 +1,4 @@
-package com.zulipmobile;
+package com.loopzero;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.zulipmobile.notifications;
+package com.loopzero.notifications;
 
 
 import com.facebook.react.bridge.ReactApplicationContext;
