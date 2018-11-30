@@ -16,9 +16,11 @@ export default class WelcomeHelpScreen extends PureComponent<{}> {
       <Screen title="Help" centerContent padding>
         <RawLabel
           style={styles.helpText}
-          text={`Welcome to Zulip!
+          text={`Welcome to Loop Zero!
 
-You'll need to first create an account from your computer. If you're not sure where to start, go to zulipchat.com from your web browser.
+This is an invite only community. You'll need to complete the registration process from your email invite.
+
+Alternatively you can email armaan@loopzero.in to request an invitation.
 
 Hope to see you back here soon!
 `}
