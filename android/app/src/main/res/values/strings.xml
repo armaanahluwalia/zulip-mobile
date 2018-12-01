@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zulip</string>
+    <string name="app_name">Loop Zero</string>
     <string name="notification_channel_name">Notifications</string>
     <string name="gcm_id">835904834568\</string>
     <string name="no_browser_found">No Browser Found</string>

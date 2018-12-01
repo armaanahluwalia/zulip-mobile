@@ -153,9 +153,9 @@ public class GCMPushNotifications extends PushNotification {
         int totalMessagesCount = extractTotalMessagesCount(conversations);
 
         if (BuildConfig.DEBUG) {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.icon);
         } else {
-            builder.setSmallIcon(R.drawable.zulip_notification);
+            builder.setSmallIcon(R.drawable.icon);
         }
 
         if (conversations.size() == 1) {
