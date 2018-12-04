@@ -12,7 +12,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="zulip-logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="B1C-qq-Ssc">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loopzero-logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="B1C-qq-Ssc">
                     <frame key="frameInset" minX="181" minY="106" width="123" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
@@ -24,6 +24,6 @@
         </view>
     </objects>
     <resources>
-        <image name="zulip-logo.png" width="512" height="512"/>
+        <image name="loopzero-logo.png" width="512" height="512"/>
     </resources>
 </document>
