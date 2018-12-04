@@ -1027,9 +1027,9 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 4Y8GF3GTTW;
+						DevelopmentTeam = Y47MWB9L96;
 						LastSwiftMigration = 1010;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1800,9 +1800,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ZulipMobile/ZulipMobile.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 4Y8GF3GTTW;
+				DEVELOPMENT_TEAM = Y47MWB9L96;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1831,8 +1833,9 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.loopzero.loopzero;
-				PRODUCT_NAME = ZulipMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_NAME = LoopZero;
+				PROVISIONING_PROFILE = "16d61587-d1f7-4f1b-81bc-ae367c1547b8";
+				PROVISIONING_PROFILE_SPECIFIER = "Loop Zero Production";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipMobile-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -1846,8 +1849,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ZulipMobile/ZulipMobile.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 4Y8GF3GTTW;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = Y47MWB9L96;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1876,8 +1881,9 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.loopzero.loopzero;
-				PRODUCT_NAME = ZulipMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_NAME = LoopZero;
+				PROVISIONING_PROFILE = "16d61587-d1f7-4f1b-81bc-ae367c1547b8";
+				PROVISIONING_PROFILE_SPECIFIER = "Loop Zero Production";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipMobile-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
